@@ -27,11 +27,11 @@
         h2 { color: #222; margin-bottom: 5px; font-size: 24px; }
         .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; }
         
-        /* Total Days Row Box */
+        /* Top Total Days Box */
         .total-completed-row {
-            background-color: #333;
+            background-color: #212121;
             color: #fff;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
@@ -72,14 +72,14 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.3s;
+            transition: transform 0.1s, background-color 0.2s;
         }
         .day-dot:active { transform: scale(0.9); }
         
-        /* Custom Colors for Dots */
-        .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.2); }
-        .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.2); }
-        .day-dot.upcoming { background-color: #212121; color: #888; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
+        /* Simple & Clear Dot Colors */
+        .day-dot.upcoming { background-color: #2c2c2c; color: #ffffff; } /* Black Dot */
+        .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.3); } /* Green Dot */
+        .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.3); } /* Red Dot */
         
         /* Relapse/Reset Button */
         .btn-reset {
@@ -92,7 +92,6 @@
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            transition: background-color 0.2s, transform 0.1s;
             box-shadow: 0 5px 15px rgba(244,67,54,0.3);
         }
         .btn-reset:active { transform: scale(0.98); background-color: #d32f2f; }
@@ -117,25 +116,22 @@
     </div>
 
     <!-- Monthly Grid Chart -->
-    <h3>Last 30 Days Chart</h3>
+    <h3>1 Month Calendar Chart</h3>
     <div class="grid-container" id="calendar-grid"></div>
 
     <!-- Reset Trigger Button -->
     <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
     
-    <p class="tip-text">Tip: Kisi bhi date par direct click karke bhi aap uska status badal sakte hain. Pavitra din green dikhenge aur bache hue black.</p>
+    <p class="tip-text">Tip: Shuruat me saare dots Black hain. Kisi bhi date par click karke use Green (🟢) bana sakte hain. Relapse hone par Red (🔴) ho jayega.</p>
 </div>
 
 <script>
-    const totalDays = 30; // 30-day dashboard setup
+    const totalDays = 30; // Pure 30 din ka chart
     
-    // Default system set: Shuruat ke 10 din default 'pavitra' (green) baki 'upcoming' (black)
+    // Default setup: Saare 30 din shuruat me 'upcoming' (Black dots) rahenge
     let defaultData = Array(totalDays).fill('upcoming');
-    for(let i = 0; i < 10; i++) {
-        defaultData[i] = 'pavitra';
-    }
 
-    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaDataAlpha')) || defaultData;
+    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaAlphaV2')) || defaultData;
 
     function renderGrid() {
         const grid = document.getElementById('calendar-grid');
@@ -149,24 +145,24 @@
             dot.classList.add('day-dot');
             dot.innerText = index + 1;
 
-            // Apply style classes according to logic
+            // Har dot ka status check karke color lagana
             if (status === 'pavitra') {
-                dot.classList.add('pavitra');
-                totalCompletedCount++; // Count total green days
+                dot.classList.add('pavitra'); // Green
+                totalCompletedCount++; 
             } else if (status === 'broken') {
-                dot.classList.add('broken');
+                dot.classList.add('broken'); // Red
             } else {
-                dot.classList.add('upcoming'); // Black points for remaining days
+                dot.classList.add('upcoming'); // Black
             }
 
-            // Click interaction logic to toggle manually
+            // Click karne par status badalne ka logic (Black -> Green -> Red -> Black)
             dot.onclick = () => {
-                if (trackerData[index] === 'pavitra') {
-                    trackerData[index] = 'broken';
-                } else if (trackerData[index] === 'broken') {
-                    trackerData[index] = 'upcoming';
-                } else {
+                if (trackerData[index] === 'upcoming') {
                     trackerData[index] = 'pavitra';
+                } else if (trackerData[index] === 'pavitra') {
+                    trackerData[index] = 'broken';
+                } else {
+                    trackerData[index] = 'upcoming';
                 }
                 saveAndRefresh();
             };
@@ -174,13 +170,13 @@
             grid.appendChild(dot);
         });
 
-        // Current streak counter evaluation
+        // Current streak counter chalane ka logic
         for (let i = 0; i < trackerData.length; i++) {
             if (trackerData[i] === 'pavitra') {
                 tempStreak++;
                 currentStreak = tempStreak;
             } else if (trackerData[i] === 'broken') {
-                tempStreak = 0; // Reset streak immediately on red dot hit
+                tempStreak = 0; // Agar red dot aaya toh streak tut jayegi
             }
         }
         
@@ -188,7 +184,7 @@
         document.getElementById('total-days-display').innerText = `Total Completed: ${totalCompletedCount} Days`;
     }
 
-    // Reset button logic triggers red mark on the latest current active index
+    // Aaj ki real date par relapse (Red mark) lagane ka logic
     function markRelapse() {
         const today = new Date().getDate();
         if(today <= totalDays) {
@@ -198,7 +194,7 @@
     }
 
     function saveAndRefresh() {
-        localStorage.setItem('brahmacharyaDataAlpha', JSON.stringify(trackerData));
+        localStorage.setItem('brahmacharyaAlphaV2', JSON.stringify(trackerData));
         renderGrid();
     }
 
