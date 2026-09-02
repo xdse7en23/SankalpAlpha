@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SankalpAlpha Tracker</title>
+    <title>SankalpAlpha Pro Tracker & Planner</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,17 +15,45 @@
             align-items: center;
             min-height: 100vh;
         }
+        
+        /* Two Column Layout Wrapper */
+        .main-wrapper {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+            flex-wrap: wrap; /* Desktop par side-by-side, mobile par upar-niche */
+            justify-content: center;
+        }
+
         .app-container {
             background: white;
             padding: 30px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 380px;
+            flex: 1;
+            min-width: 340px;
+            max-width: 400px;
             text-align: center;
+            box-sizing: border-box;
         }
-        h2 { color: #222; margin-bottom: 5px; font-size: 24px; }
-        .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; }
+
+        /* Notebook / Right Side Styling */
+        .notebook-container {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 340px;
+            max-width: 450px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 { color: #222; margin-top: 0; margin-bottom: 5px; font-size: 24px; text-align: center; }
+        .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; text-align: center; }
         
         /* Top Total Days Box */
         .total-completed-row {
@@ -37,6 +65,7 @@
             font-weight: bold;
             margin-bottom: 15px;
             letter-spacing: 0.5px;
+            text-align: center;
         }
 
         /* Main Day Counter Box */
@@ -52,7 +81,7 @@
         .counter-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: 500; opacity: 0.9; }
         
         /* Grid Dots / Calendar Chart */
-        h3 { color: #333; font-size: 18px; margin-bottom: 15px; text-align: left; padding-left: 5px; }
+        h3 { color: #333; font-size: 18px; margin-bottom: 15px; text-align: left; padding-left: 5px; margin-top: 0; }
         .grid-container {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -77,9 +106,9 @@
         .day-dot:active { transform: scale(0.9); }
         
         /* Simple & Clear Dot Colors */
-        .day-dot.upcoming { background-color: #2c2c2c; color: #ffffff; } /* Black Dot */
-        .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.3); } /* Green Dot */
-        .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.3); } /* Red Dot */
+        .day-dot.upcoming { background-color: #2c2c2c; color: #ffffff; } 
+        .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.3); } 
+        .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.3); } 
         
         /* Relapse/Reset Button */
         .btn-reset {
@@ -95,43 +124,179 @@
             box-shadow: 0 5px 15px rgba(244,67,54,0.3);
         }
         .btn-reset:active { transform: scale(0.98); background-color: #d32f2f; }
-        .tip-text { font-size: 12px; color: #888; margin-top: 15px; line-height: 1.4; }
+
+        /* Notebook Drawing Layout Elements */
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group textarea {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #4caf50;
+        }
+        .btn-save-note {
+            background-color: #212121;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+        }
+        .btn-save-note:hover { background-color: #444; }
+
+        /* Scrollable Notes List Window */
+        .notes-list-box {
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 15px;
+            background-color: #fefefe;
+            max-height: 320px;
+            overflow-y: auto; /* Adds the requested scrollbar */
+        }
+        /* Custom Nice Looking Scrollbar */
+        .notes-list-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .notes-list-box::-webkit-scrollbar-thumb {
+            background-color: #bbb;
+            border-radius: 10px;
+        }
+
+        /* Individual Custom Drawing Note Box UI */
+        .note-card {
+            border: 2px solid #555;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            background: #fff;
+            padding: 0;
+            overflow: hidden;
+            text-align: left;
+            position: relative;
+        }
+        .note-card-header {
+            display: flex;
+            border-bottom: 2px solid #555;
+            background: #f0f0f0;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .note-card-date {
+            padding: 8px 12px;
+            border-right: 2px solid #555;
+            flex: 1;
+        }
+        .note-card-time {
+            padding: 8px 12px;
+            flex: 1;
+        }
+        .note-card-body {
+            padding: 12px;
+            font-size: 14px;
+            color: #333;
+            min-height: 40px;
+            white-space: pre-wrap;
+        }
+        .delete-note-btn {
+            position: absolute;
+            right: 8px;
+            top: 6px;
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .no-notes {
+            color: #888;
+            font-size: 14px;
+            padding: 20px 0;
+        }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <h2>SankalpAlpha Tracker</h2>
-    <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
+<div class="main-wrapper">
 
-    <!-- Top Total Days Row -->
-    <div class="total-completed-row" id="total-days-display">
-        Total Completed: 0 Days
+    <!-- LEFT PANEL: Tracker Dashboard -->
+    <div class="app-container">
+        <h2>SankalpAlpha Tracker</h2>
+        <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
+
+        <div class="total-completed-row" id="total-days-display">
+            Total Completed: 0 Days
+        </div>
+
+        <div class="counter-box">
+            <h1 id="streak-count">0</h1>
+            <p>Sful Din (Current Streak)</p>
+        </div>
+
+        <h3>1 Month Calendar Chart</h3>
+        <div class="grid-container" id="calendar-grid"></div>
+
+        <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
     </div>
 
-    <!-- Current Streak Box -->
-    <div class="counter-box">
-        <h1 id="streak-count">0</h1>
-        <p>Sful Din (Current Streak)</p>
+    <!-- RIGHT PANEL: Future Work Notebook Planner -->
+    <div class="notebook-container">
+        <h3>📓 Future Work Notebook</h3>
+        
+        <!-- Add New Note Form Fields -->
+        <div class="input-row">
+            <div class="input-group">
+                <label>Date:</label>
+                <input type="date" id="note-date">
+            </div>
+            <div class="input-group">
+                <label>Time:</label>
+                <input type="time" id="note-time">
+            </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 15px;">
+            <label>Note / Future Work:</label>
+            <textarea id="note-text" rows="3" placeholder="Apna future target ya kaam likhein..."></textarea>
+        </div>
+        <button class="btn-save-note" onclick="addNote()">Save Task Note</button>
+
+        <!-- Scrollable Task Notes Container -->
+        <div class="notes-list-box" id="notes-list-box">
+            <!-- Dynamic Drawing Formatted Notes Will Append Here -->
+        </div>
     </div>
 
-    <!-- Monthly Grid Chart -->
-    <h3>1 Month Calendar Chart</h3>
-    <div class="grid-container" id="calendar-grid"></div>
-
-    <!-- Reset Trigger Button -->
-    <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
-    
-    <p class="tip-text">Tip: Shuruat me saare dots Black hain. Kisi bhi date par click karke use Green (🟢) bana sakte hain. Relapse hone par Red (🔴) ho jayega.</p>
 </div>
 
 <script>
-    const totalDays = 30; // Pure 30 din ka chart
-    
-    // Default setup: Saare 30 din shuruat me 'upcoming' (Black dots) rahenge
+    // --- TRACKER LOGIC ---
+    const totalDays = 30;
     let defaultData = Array(totalDays).fill('upcoming');
-
-    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaAlphaV2')) || defaultData;
+    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaAlphaV3')) || defaultData;
 
     function renderGrid() {
         const grid = document.getElementById('calendar-grid');
@@ -145,61 +310,5 @@
             dot.classList.add('day-dot');
             dot.innerText = index + 1;
 
-            // Har dot ka status check karke color lagana
             if (status === 'pavitra') {
-                dot.classList.add('pavitra'); // Green
-                totalCompletedCount++; 
-            } else if (status === 'broken') {
-                dot.classList.add('broken'); // Red
-            } else {
-                dot.classList.add('upcoming'); // Black
-            }
-
-            // Click karne par status badalne ka logic (Black -> Green -> Red -> Black)
-            dot.onclick = () => {
-                if (trackerData[index] === 'upcoming') {
-                    trackerData[index] = 'pavitra';
-                } else if (trackerData[index] === 'pavitra') {
-                    trackerData[index] = 'broken';
-                } else {
-                    trackerData[index] = 'upcoming';
-                }
-                saveAndRefresh();
-            };
-
-            grid.appendChild(dot);
-        });
-
-        // Current streak counter chalane ka logic
-        for (let i = 0; i < trackerData.length; i++) {
-            if (trackerData[i] === 'pavitra') {
-                tempStreak++;
-                currentStreak = tempStreak;
-            } else if (trackerData[i] === 'broken') {
-                tempStreak = 0; // Agar red dot aaya toh streak tut jayegi
-            }
-        }
-        
-        document.getElementById('streak-count').innerText = currentStreak;
-        document.getElementById('total-days-display').innerText = `Total Completed: ${totalCompletedCount} Days`;
-    }
-
-    // Aaj ki real date par relapse (Red mark) lagane ka logic
-    function markRelapse() {
-        const today = new Date().getDate();
-        if(today <= totalDays) {
-            trackerData[today - 1] = 'broken';
-            saveAndRefresh();
-        }
-    }
-
-    function saveAndRefresh() {
-        localStorage.setItem('brahmacharyaAlphaV2', JSON.stringify(trackerData));
-        renderGrid();
-    }
-
-    renderGrid();
-</script>
-
-</body>
-</html>
+                dot.classList.add('pavitra');
