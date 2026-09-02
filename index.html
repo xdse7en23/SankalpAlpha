@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brahmacharya Tracker</title>
+    <title>SankalpAlpha Tracker</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,6 +27,18 @@
         h2 { color: #222; margin-bottom: 5px; font-size: 24px; }
         .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; }
         
+        /* Total Days Row Box */
+        .total-completed-row {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
         /* Main Day Counter Box */
         .counter-box {
             background: linear-gradient(135deg, #2e7d32, #4caf50);
@@ -54,19 +66,20 @@
         .day-dot {
             aspect-ratio: 1;
             border-radius: 50%;
-            background-color: #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 13px;
             font-weight: 600;
-            color: #666;
             cursor: pointer;
             transition: transform 0.2s, background-color 0.3s;
         }
         .day-dot:active { transform: scale(0.9); }
+        
+        /* Custom Colors for Dots */
         .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.2); }
         .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.2); }
+        .day-dot.upcoming { background-color: #212121; color: #888; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
         
         /* Relapse/Reset Button */
         .btn-reset {
@@ -89,86 +102,106 @@
 <body>
 
 <div class="app-container">
-    <h2>Brahmacharya Tracker</h2>
+    <h2>SankalpAlpha Tracker</h2>
     <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
 
-    <!-- Streak Counter -->
+    <!-- Top Total Days Row -->
+    <div class="total-completed-row" id="total-days-display">
+        Total Completed: 0 Days
+    </div>
+
+    <!-- Current Streak Box -->
     <div class="counter-box">
         <h1 id="streak-count">0</h1>
         <p>Sful Din (Current Streak)</p>
     </div>
 
     <!-- Monthly Grid Chart -->
-    <h3>Is Month Ka Chart</h3>
+    <h3>Last 30 Days Chart</h3>
     <div class="grid-container" id="calendar-grid"></div>
 
     <!-- Reset Trigger Button -->
     <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
     
-    <p class="tip-text">Tip: Kisi bhi date par direct click karke bhi aap uska color/status badal sakte hain. Aapka data browser me saved rahega.</p>
+    <p class="tip-text">Tip: Kisi bhi date par direct click karke bhi aap uska status badal sakte hain. Pavitra din green dikhenge aur bache hue black.</p>
 </div>
 
 <script>
-    const totalDays = 30; // Mahine ke 30 din ka chart
+    const totalDays = 30; // 30-day dashboard setup
     
-    // Browser memory se data load karne ke liye local storage logic
-    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaData')) || Array(totalDays).fill('pavitra');
+    // Default system set: Shuruat ke 10 din default 'pavitra' (green) baki 'upcoming' (black)
+    let defaultData = Array(totalDays).fill('upcoming');
+    for(let i = 0; i < 10; i++) {
+        defaultData[i] = 'pavitra';
+    }
+
+    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaDataAlpha')) || defaultData;
 
     function renderGrid() {
         const grid = document.getElementById('calendar-grid');
         grid.innerHTML = '';
         let currentStreak = 0;
         let tempStreak = 0;
+        let totalCompletedCount = 0;
 
         trackerData.forEach((status, index) => {
             const dot = document.createElement('div');
             dot.classList.add('day-dot');
             dot.innerText = index + 1;
 
-            // Green/Red UI coloring conditionally
+            // Apply style classes according to logic
             if (status === 'pavitra') {
                 dot.classList.add('pavitra');
-            } else {
+                totalCompletedCount++; // Count total green days
+            } else if (status === 'broken') {
                 dot.classList.add('broken');
+            } else {
+                dot.classList.add('upcoming'); // Black points for remaining days
             }
 
-            // Click feature to manually toggle specific dates
+            // Click interaction logic to toggle manually
             dot.onclick = () => {
-                trackerData[index] = trackerData[index] === 'pavitra' ? 'broken' : 'pavitra';
+                if (trackerData[index] === 'pavitra') {
+                    trackerData[index] = 'broken';
+                } else if (trackerData[index] === 'broken') {
+                    trackerData[index] = 'upcoming';
+                } else {
+                    trackerData[index] = 'pavitra';
+                }
                 saveAndRefresh();
             };
 
             grid.appendChild(dot);
         });
 
-        // Current safe streak count calculation algorithm
+        // Current streak counter evaluation
         for (let i = 0; i < trackerData.length; i++) {
             if (trackerData[i] === 'pavitra') {
                 tempStreak++;
                 currentStreak = tempStreak;
-            } else {
-                tempStreak = 0; // Red dot critical logic: breaks the loop count and resets to 0
+            } else if (trackerData[i] === 'broken') {
+                tempStreak = 0; // Reset streak immediately on red dot hit
             }
         }
+        
         document.getElementById('streak-count').innerText = currentStreak;
+        document.getElementById('total-days-display').innerText = `Total Completed: ${totalCompletedCount} Days`;
     }
 
-    // Aaj ki current date par relapse mark karne ka main logic
+    // Reset button logic triggers red mark on the latest current active index
     function markRelapse() {
         const today = new Date().getDate();
         if(today <= totalDays) {
-            trackerData[today - ] = 'broken';
+            trackerData[today - 1] = 'broken';
             saveAndRefresh();
         }
     }
 
-    // Data persistent memory save system
     function saveAndRefresh() {
-        localStorage.setItem('brahmacharyaData', JSON.stringify(trackerData));
+        localStorage.setItem('brahmacharyaDataAlpha', JSON.stringify(trackerData));
         renderGrid();
     }
 
-    // Initialize application on load
     renderGrid();
 </script>
 
