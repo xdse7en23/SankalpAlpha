@@ -3,35 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SankalpAlpha Tracker</title>
+    <title>SankalpAlpha Ultimate Pro</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f6f9;
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
         
-        /* Centered Premium Vertical Container */
+        /* 50/50 Half Screen Split Layout Container */
+        .main-wrapper {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            max-width: 1100px; /* Expands to utilize desktop width fully */
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        /* LEFT SIDE: Exact Screenshot UI Setup */
         .app-container {
             background: white;
             padding: 40px;
             border-radius: 30px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 480px; /* Locked to perfect centered screenshot width */
+            flex: 1; /* Pure 50% spacing alignment */
+            min-width: 420px;
             text-align: center;
             box-sizing: border-box;
+        }
+
+        /* RIGHT SIDE: Perfectly Matched Square Notebook UI */
+        .notebook-container {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            flex: 1; /* Pure 50% spacing alignment */
+            min-width: 420px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 { color: #000000; margin-top: 0; margin-bottom: 5px; font-size: 26px; font-weight: 700; }
         .subtitle { color: #666; margin: 0 0 25px 0; font-size: 14px; font-weight: 500; }
         
-        /* Total Completed Top Row */
+        /* Total Completed Box Line */
         .total-completed-row {
             background-color: #1a1a1a;
             color: #fff;
@@ -43,7 +67,7 @@
             letter-spacing: 0.3px;
         }
 
-        /* Large Premium Counter Box */
+        /* Large Premium Counter Box from Screenshot */
         .counter-box {
             background: linear-gradient(135deg, #2e7d32, #4caf50);
             color: white;
@@ -55,7 +79,7 @@
         .counter-box h1 { margin: 0; font-size: 5rem; font-weight: 700; line-height: 1; }
         .counter-box p { margin: 10px 0 0 0; font-size: 15px; font-weight: 500; opacity: 0.9; }
         
-        h3 { color: #222; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: left; padding-left: 2px; }
+        h3 { color: #222; font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: left; padding-left: 2px; margin-top: 0; }
         
         /* Clean 30-Day Grid Layout */
         .grid-container {
@@ -99,16 +123,140 @@
             font-weight: 700;
             width: 100%;
             box-shadow: 0 6px 20px rgba(239,83,80,0.3);
-            transition: background-color 0.2s;
         }
         .btn-reset:active { transform: scale(0.99); background-color: #e53935; }
-        
-        .tip-text { font-size: 11px; color: #999; margin-top: 25px; line-height: 1.5; text-align: center; }
+
+        /* Notebook Section Form Elements */
+        .input-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group textarea {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: #66bb6a;
+        }
+        .btn-save-note {
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+        .btn-save-note:active { transform: scale(0.98); }
+
+        /* Scrollbar Configured Notes Output Box */
+        .notes-list-box {
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            background-color: #fafafa;
+            max-height: 380px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .notes-list-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .notes-list-box::-webkit-scrollbar-thumb {
+            background-color: #bbb;
+            border-radius: 10px;
+        }
+
+        /* Perfect Square Formatted Note Card layout */
+        .note-card {
+            border: 2px solid #555;
+            border-radius: 0px; 
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 0;
+            overflow: hidden;
+            text-align: left;
+            position: relative;
+        }
+        .note-card-header {
+            display: flex;
+            border-bottom: 2px solid #555;
+            background: #f0f0f0;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .note-card-date {
+            padding: 10px 12px;
+            border-right: 2px solid #555;
+            flex: 1;
+        }
+        .note-card-time {
+            padding: 10px 12px;
+            flex: 1;
+        }
+        .note-card-body {
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+            min-height: 50px;
+            white-space: pre-wrap;
+        }
+        .delete-note-btn {
+            position: absolute;
+            right: 10px;
+            top: 8px;
+            background: none;
+            border: none;
+            color: #ef5350;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .no-notes {
+            color: #888;
+            font-size: 14px;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Screen layout flex wrap fallback for tablets */
+        @media (max-width: 900px) {
+            .main-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .app-container, .notebook-container {
+                width: 100%;
+                min-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Target Screenshot UI Layout Locked -->
+<div class="main-wrapper">
+
+    <!-- LEFT SCREEN PANEL: Exact Locked Screenshot UI Layout -->
     <div class="app-container">
         <h2>SankalpAlpha Tracker</h2>
         <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
@@ -126,82 +274,39 @@
         <div class="grid-container" id="calendar-grid"></div>
 
         <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
-        
-        <p class="tip-text">Tip: Kisi bhi date par direct click karke bhi aap uska status badal sakte hain. Pavitra din green dikhenge aur bache hue black.</p>
     </div>
 
+    <!-- RIGHT SCREEN PANEL: Half Screen Connected Notebook -->
+    <div class="notebook-container">
+        <h3>📓 Future Work Notebook</h3>
+        
+        <div class="input-row">
+            <div class="input-group">
+                <label>Date:</label>
+                <input type="date" id="note-date">
+            </div>
+            <div class="input-group">
+                <label>Time:</label>
+                <input type="time" id="note-time">
+            </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+            <label>Note / Future Work:</label>
+            <textarea id="note-text" rows="4" placeholder="Apna future target ya kaam likhein..."></textarea>
+        </div>
+        <button class="btn-save-note" onclick="addNote()">Save Task Note</button>
+
+        <div class="notes-list-box" id="notes-list-box">
+            <!-- Saved Square Notes will list chronologically here -->
+        </div>
+    </div>
+
+</div>
+
 <script>
+    // --- CONNECTED LOGIC CORES ---
     const totalDays = 30;
-    
-    // Core state array matching the UI behavior perfectly
     let defaultTracker = Array(totalDays).fill('upcoming');
-    let trackerData = JSON.parse(localStorage.getItem('alphaTrackerUIOnly')) || defaultTracker;
+    let trackerData = JSON.parse(localStorage.getItem('alphaTrackerUIComboFixed')) || defaultTracker;
 
     function renderGrid() {
-        const grid = document.getElementById('calendar-grid');
-        grid.innerHTML = '';
-        let currentStreak = 0;
-        let tempStreak = 0;
-        let totalCompletedCount = 0;
-
-        trackerData.forEach((status, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('day-dot');
-            dot.innerText = index + 1;
-
-            if (status === 'pavitra') {
-                dot.classList.add('pavitra');
-                totalCompletedCount++; 
-            } else if (status === 'broken') {
-                dot.classList.add('broken');
-            } else {
-                dot.classList.add('upcoming');
-            }
-
-            // Click handling cycling mechanism
-            dot.onclick = () => {
-                if (trackerData[index] === 'upcoming') {
-                    trackerData[index] = 'pavitra';
-                } else if (trackerData[index] === 'pavitra') {
-                    trackerData[index] = 'broken';
-                } else {
-                    trackerData[index] = 'upcoming';
-                }
-                saveAndRefresh();
-            };
-
-            grid.appendChild(dot);
-        });
-
-        // Exact streak evaluation chain rules
-        for (let i = 0; i < trackerData.length; i++) {
-            if (trackerData[i] === 'pavitra') {
-                tempStreak++;
-                currentStreak = tempStreak;
-            } else if (trackerData[i] === 'broken') {
-                tempStreak = 0;
-            }
-        }
-        
-        document.getElementById('streak-count').innerText = currentStreak;
-        document.getElementById('total-days-display').innerText = `Total Completed: ${totalCompletedCount} Days`;
-    }
-
-    function markRelapse() {
-        const today = new Date().getDate();
-        if(today <= totalDays) {
-            trackerData[today - 1] = 'broken';
-            saveAndRefresh();
-        }
-    }
-
-    function saveAndRefresh() {
-        localStorage.setItem('alphaTrackerUIOnly', JSON.stringify(trackerData));
-        renderGrid();
-    }
-
-    renderGrid();
-</script>
-
-</body>
-</html>
