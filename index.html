@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brahmacharya Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .app-container {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        h2 { color: #222; margin-bottom: 5px; font-size: 24px; }
+        .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; }
+        
+        /* Main Day Counter Box */
+        .counter-box {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(76,175,80,0.3);
+        }
+        .counter-box h1 { margin: 0; font-size: 4rem; font-weight: bold; }
+        .counter-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: 500; opacity: 0.9; }
+        
+        /* Grid Dots / Calendar Chart */
+        h3 { color: #333; font-size: 18px; margin-bottom: 15px; text-align: left; padding-left: 5px; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #eee;
+        }
+        .day-dot {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .day-dot:active { transform: scale(0.9); }
+        .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.2); }
+        .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.2); }
+        
+        /* Relapse/Reset Button */
+        .btn-reset {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 5px 15px rgba(244,67,54,0.3);
+        }
+        .btn-reset:active { transform: scale(0.98); background-color: #d32f2f; }
+        .tip-text { font-size: 12px; color: #888; margin-top: 15px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>Brahmacharya Tracker</h2>
+    <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
+
+    <!-- Streak Counter -->
+    <div class="counter-box">
+        <h1 id="streak-count">0</h1>
+        <p>Sful Din (Current Streak)</p>
+    </div>
+
+    <!-- Monthly Grid Chart -->
+    <h3>Is Month Ka Chart</h3>
+    <div class="grid-container" id="calendar-grid"></div>
+
+    <!-- Reset Trigger Button -->
+    <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
+    
+    <p class="tip-text">Tip: Kisi bhi date par direct click karke bhi aap uska color/status badal sakte hain. Aapka data browser me saved rahega.</p>
+</div>
+
+<script>
+    const totalDays = 30; // Mahine ke 30 din ka chart
+    
+    // Browser memory se data load karne ke liye local storage logic
+    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaData')) || Array(totalDays).fill('pavitra');
+
+    function renderGrid() {
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+        let currentStreak = 0;
+        let tempStreak = 0;
+
+        trackerData.forEach((status, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('day-dot');
+            dot.innerText = index + 1;
+
+            // Green/Red UI coloring conditionally
+            if (status === 'pavitra') {
+                dot.classList.add('pavitra');
+            } else {
+                dot.classList.add('broken');
+            }
+
+            // Click feature to manually toggle specific dates
+            dot.onclick = () => {
+                trackerData[index] = trackerData[index] === 'pavitra' ? 'broken' : 'pavitra';
+                saveAndRefresh();
+            };
+
+            grid.appendChild(dot);
+        });
+
+        // Current safe streak count calculation algorithm
+        for (let i = 0; i < trackerData.length; i++) {
+            if (trackerData[i] === 'pavitra') {
+                tempStreak++;
+                currentStreak = tempStreak;
+            } else {
+                tempStreak = 0; // Red dot critical logic: breaks the loop count and resets to 0
+            }
+        }
+        document.getElementById('streak-count').innerText = currentStreak;
+    }
+
+    // Aaj ki current date par relapse mark karne ka main logic
+    function markRelapse() {
+        const today = new Date().getDate();
+        if(today <= totalDays) {
+            trackerData[today - ] = 'broken';
+            saveAndRefresh();
+        }
+    }
+
+    // Data persistent memory save system
+    function saveAndRefresh() {
+        localStorage.setItem('brahmacharyaData', JSON.stringify(trackerData));
+        renderGrid();
+    }
+
+    // Initialize application on load
+    renderGrid();
+</script>
+
+</body>
+</html>
