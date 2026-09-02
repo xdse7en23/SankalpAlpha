@@ -16,13 +16,12 @@
             min-height: 100vh;
         }
         
-        /* Two Column Layout Wrapper */
         .main-wrapper {
             display: flex;
             gap: 30px;
             width: 100%;
             max-width: 900px;
-            flex-wrap: wrap; /* Desktop par side-by-side, mobile par upar-niche */
+            flex-wrap: wrap;
             justify-content: center;
         }
 
@@ -38,7 +37,6 @@
             box-sizing: border-box;
         }
 
-        /* Notebook / Right Side Styling */
         .notebook-container {
             background: white;
             padding: 30px;
@@ -55,7 +53,6 @@
         h2 { color: #222; margin-top: 0; margin-bottom: 5px; font-size: 24px; text-align: center; }
         .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; text-align: center; }
         
-        /* Top Total Days Box */
         .total-completed-row {
             background-color: #212121;
             color: #fff;
@@ -68,7 +65,6 @@
             text-align: center;
         }
 
-        /* Main Day Counter Box */
         .counter-box {
             background: linear-gradient(135deg, #2e7d32, #4caf50);
             color: white;
@@ -80,7 +76,6 @@
         .counter-box h1 { margin: 0; font-size: 4rem; font-weight: bold; }
         .counter-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: 500; opacity: 0.9; }
         
-        /* Grid Dots / Calendar Chart */
         h3 { color: #333; font-size: 18px; margin-bottom: 15px; text-align: left; padding-left: 5px; margin-top: 0; }
         .grid-container {
             display: grid;
@@ -105,12 +100,10 @@
         }
         .day-dot:active { transform: scale(0.9); }
         
-        /* Simple & Clear Dot Colors */
         .day-dot.upcoming { background-color: #2c2c2c; color: #ffffff; } 
         .day-dot.pavitra { background-color: #4caf50; color: white; box-shadow: 0 3px 8px rgba(76,175,80,0.3); } 
         .day-dot.broken { background-color: #f44336; color: white; box-shadow: 0 3px 8px rgba(244,67,54,0.3); } 
         
-        /* Relapse/Reset Button */
         .btn-reset {
             background-color: #f44336;
             color: white;
@@ -125,7 +118,7 @@
         }
         .btn-reset:active { transform: scale(0.98); background-color: #d32f2f; }
 
-        /* Notebook Drawing Layout Elements */
+        /* Notebook Inputs Styling */
         .input-row {
             display: flex;
             gap: 10px;
@@ -169,16 +162,15 @@
         }
         .btn-save-note:hover { background-color: #444; }
 
-        /* Scrollable Notes List Window */
+        /* Scrollable Notes List Box */
         .notes-list-box {
             border: 1px solid #ddd;
             border-radius: 15px;
             padding: 15px;
             background-color: #fefefe;
             max-height: 320px;
-            overflow-y: auto; /* Adds the requested scrollbar */
+            overflow-y: auto;
         }
-        /* Custom Nice Looking Scrollbar */
         .notes-list-box::-webkit-scrollbar {
             width: 6px;
         }
@@ -187,10 +179,10 @@
             border-radius: 10px;
         }
 
-        /* Individual Custom Drawing Note Box UI */
+        /* Drawing Box Code (Square Box format) */
         .note-card {
             border: 2px solid #555;
-            border-radius: 12px;
+            border-radius: 0px; /* Perfect Square look like drawing */
             margin-bottom: 15px;
             background: #fff;
             padding: 0;
@@ -218,7 +210,7 @@
             padding: 12px;
             font-size: 14px;
             color: #333;
-            min-height: 40px;
+            min-height: 50px;
             white-space: pre-wrap;
         }
         .delete-note-btn {
@@ -263,11 +255,10 @@
         <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
     </div>
 
-    <!-- RIGHT PANEL: Future Work Notebook Planner -->
+    <!-- RIGHT PANEL: Future Work Notebook -->
     <div class="notebook-container">
         <h3>📓 Future Work Notebook</h3>
         
-        <!-- Add New Note Form Fields -->
         <div class="input-row">
             <div class="input-group">
                 <label>Date:</label>
@@ -284,9 +275,8 @@
         </div>
         <button class="btn-save-note" onclick="addNote()">Save Task Note</button>
 
-        <!-- Scrollable Task Notes Container -->
         <div class="notes-list-box" id="notes-list-box">
-            <!-- Dynamic Drawing Formatted Notes Will Append Here -->
+            <!-- Notes are generated here -->
         </div>
     </div>
 
@@ -295,8 +285,8 @@
 <script>
     // --- TRACKER LOGIC ---
     const totalDays = 30;
-    let defaultData = Array(totalDays).fill('upcoming');
-    let trackerData = JSON.parse(localStorage.getItem('brahmacharyaAlphaV3')) || defaultData;
+    let defaultTracker = Array(totalDays).fill('upcoming');
+    let trackerData = JSON.parse(localStorage.getItem('alphaTrackerDataFix')) || defaultTracker;
 
     function renderGrid() {
         const grid = document.getElementById('calendar-grid');
@@ -312,3 +302,16 @@
 
             if (status === 'pavitra') {
                 dot.classList.add('pavitra');
+                totalCompletedCount++; 
+            } else if (status === 'broken') {
+                dot.classList.add('broken');
+            } else {
+                dot.classList.add('upcoming');
+            }
+
+            dot.onclick = () => {
+                if (trackerData[index] === 'upcoming') {
+                    trackerData[index] = 'pavitra';
+                } else if (trackerData[index] === 'pavitra') {
+                    trackerData[index] = 'broken';
+                } else {
