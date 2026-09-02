@@ -16,51 +16,52 @@
             min-height: 100vh;
         }
         
+        /* Full Width Wrapper to remove empty space */
         .main-wrapper {
             display: flex;
-            gap: 30px;
+            gap: 40px;
             width: 100%;
-            max-width: 900px;
-            flex-wrap: wrap;
+            max-width: 1200px; /* Width increased for a bigger layout */
             justify-content: center;
+            align-items: stretch;
         }
 
+        /* Tracker Section - Size Increased */
         .app-container {
             background: white;
-            padding: 30px;
+            padding: 35px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            flex: 1;
-            min-width: 340px;
-            max-width: 400px;
-            text-align: center;
+            flex: 1.2; /* Made wider than notebook */
+            min-width: 450px;
             box-sizing: border-box;
+            text-align: center;
         }
 
+        /* Notebook Section - Size Increased */
         .notebook-container {
             background: white;
-            padding: 30px;
+            padding: 35px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             flex: 1;
-            min-width: 340px;
-            max-width: 450px;
+            min-width: 450px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
         }
 
-        h2 { color: #222; margin-top: 0; margin-bottom: 5px; font-size: 24px; text-align: center; }
-        .subtitle { color: #666; margin: 0 0 20px 0; font-size: 14px; text-align: center; }
+        h2 { color: #222; margin-top: 0; margin-bottom: 5px; font-size: 28px; text-align: center; }
+        .subtitle { color: #666; margin: 0 0 25px 0; font-size: 15px; text-align: center; }
         
         .total-completed-row {
             background-color: #212121;
             color: #fff;
-            padding: 12px 15px;
+            padding: 15px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             letter-spacing: 0.5px;
             text-align: center;
         }
@@ -68,22 +69,24 @@
         .counter-box {
             background: linear-gradient(135deg, #2e7d32, #4caf50);
             color: white;
-            padding: 25px;
+            padding: 30px;
             border-radius: 20px;
             margin-bottom: 25px;
             box-shadow: 0 8px 20px rgba(76,175,80,0.3);
         }
-        .counter-box h1 { margin: 0; font-size: 4rem; font-weight: bold; }
-        .counter-box p { margin: 5px 0 0 0; font-size: 16px; font-weight: 500; opacity: 0.9; }
+        .counter-box h1 { margin: 0; font-size: 4.5rem; font-weight: bold; }
+        .counter-box p { margin: 5px 0 0 0; font-size: 18px; font-weight: 500; opacity: 0.9; }
         
-        h3 { color: #333; font-size: 18px; margin-bottom: 15px; text-align: left; padding-left: 5px; margin-top: 0; }
+        h3 { color: #333; font-size: 20px; margin-bottom: 15px; text-align: left; padding-left: 5px; margin-top: 0; }
+        
+        /* 30 Days Calendar Grid Chart FIXED */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 12px;
             margin-bottom: 25px;
             background: #fafafa;
-            padding: 15px;
+            padding: 20px;
             border-radius: 15px;
             border: 1px solid #eee;
         }
@@ -93,7 +96,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
@@ -108,8 +111,8 @@
             background-color: #f44336;
             color: white;
             border: none;
-            padding: 15px;
-            font-size: 16px;
+            padding: 16px;
+            font-size: 18px;
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
@@ -118,11 +121,11 @@
         }
         .btn-reset:active { transform: scale(0.98); background-color: #d32f2f; }
 
-        /* Notebook Inputs Styling */
+        /* Notebook Styling */
         .input-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         .input-group {
             flex: 1;
@@ -131,17 +134,17 @@
             text-align: left;
         }
         .input-group label {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: #444;
             margin-bottom: 5px;
         }
         .input-group input, .input-group textarea {
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #ddd;
             border-radius: 10px;
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             transition: border-color 0.2s;
         }
@@ -152,24 +155,25 @@
             background-color: #212121;
             color: white;
             border: none;
-            padding: 12px;
-            font-size: 15px;
+            padding: 15px;
+            font-size: 16px;
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             transition: background-color 0.2s;
         }
         .btn-save-note:hover { background-color: #444; }
 
-        /* Scrollable Notes List Box */
+        /* Scrollable Notes Box */
         .notes-list-box {
             border: 1px solid #ddd;
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             background-color: #fefefe;
-            max-height: 320px;
+            max-height: 380px;
             overflow-y: auto;
+            flex-grow: 1;
         }
         .notes-list-box::-webkit-scrollbar {
             width: 6px;
@@ -179,11 +183,11 @@
             border-radius: 10px;
         }
 
-        /* Drawing Box Code (Square Box format) */
+        /* Square Notebook Format UI */
         .note-card {
             border: 2px solid #555;
-            border-radius: 0px; /* Perfect Square look like drawing */
-            margin-bottom: 15px;
+            border-radius: 0px; 
+            margin-bottom: 20px;
             background: #fff;
             padding: 0;
             overflow: hidden;
@@ -194,40 +198,54 @@
             display: flex;
             border-bottom: 2px solid #555;
             background: #f0f0f0;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: bold;
         }
         .note-card-date {
-            padding: 8px 12px;
+            padding: 10px 15px;
             border-right: 2px solid #555;
             flex: 1;
         }
         .note-card-time {
-            padding: 8px 12px;
+            padding: 10px 15px;
             flex: 1;
         }
         .note-card-body {
-            padding: 12px;
-            font-size: 14px;
+            padding: 15px;
+            font-size: 15px;
             color: #333;
-            min-height: 50px;
+            min-height: 60px;
             white-space: pre-wrap;
         }
         .delete-note-btn {
             position: absolute;
-            right: 8px;
-            top: 6px;
+            right: 10px;
+            top: 8px;
             background: none;
             border: none;
             color: #f44336;
             cursor: pointer;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
         }
         .no-notes {
             color: #888;
-            font-size: 14px;
+            font-size: 15px;
             padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Responsive configuration for smaller viewports */
+        @media (max-width: 950px) {
+            .main-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .app-container, .notebook-container {
+                width: 100%;
+                max-width: 550px;
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -235,7 +253,7 @@
 
 <div class="main-wrapper">
 
-    <!-- LEFT PANEL: Tracker Dashboard -->
+    <!-- LEFT PANEL: Tracker Dashboard (Size Increased) -->
     <div class="app-container">
         <h2>SankalpAlpha Tracker</h2>
         <p class="subtitle">Aapka Sankalp, Aapki Shakti 💪</p>
@@ -255,7 +273,7 @@
         <button class="btn-reset" onclick="markRelapse()">🔴 Nightfall / Relapse (Reset)</button>
     </div>
 
-    <!-- RIGHT PANEL: Future Work Notebook -->
+    <!-- RIGHT PANEL: Future Work Notebook (Size Increased) -->
     <div class="notebook-container">
         <h3>📓 Future Work Notebook</h3>
         
@@ -269,14 +287,14 @@
                 <input type="time" id="note-time">
             </div>
         </div>
-        <div class="input-group" style="margin-bottom: 15px;">
+        <div class="input-group" style="margin-bottom: 20px;">
             <label>Note / Future Work:</label>
-            <textarea id="note-text" rows="3" placeholder="Apna future target ya kaam likhein..."></textarea>
+            <textarea id="note-text" rows="4" placeholder="Apna future target ya kaam likhein..."></textarea>
         </div>
         <button class="btn-save-note" onclick="addNote()">Save Task Note</button>
 
         <div class="notes-list-box" id="notes-list-box">
-            <!-- Notes are generated here -->
+            <!-- Notes history window -->
         </div>
     </div>
 
@@ -285,8 +303,10 @@
 <script>
     // --- TRACKER LOGIC ---
     const totalDays = 30;
+    
+    // Key updated to handle new fresh render cleanly
     let defaultTracker = Array(totalDays).fill('upcoming');
-    let trackerData = JSON.parse(localStorage.getItem('alphaTrackerDataFix')) || defaultTracker;
+    let trackerData = JSON.parse(localStorage.getItem('alphaTrackerFinalFixed')) || defaultTracker;
 
     function renderGrid() {
         const grid = document.getElementById('calendar-grid');
@@ -296,22 +316,3 @@
         let totalCompletedCount = 0;
 
         trackerData.forEach((status, index) => {
-            const dot = document.createElement('div');
-            dot.classList.add('day-dot');
-            dot.innerText = index + 1;
-
-            if (status === 'pavitra') {
-                dot.classList.add('pavitra');
-                totalCompletedCount++; 
-            } else if (status === 'broken') {
-                dot.classList.add('broken');
-            } else {
-                dot.classList.add('upcoming');
-            }
-
-            dot.onclick = () => {
-                if (trackerData[index] === 'upcoming') {
-                    trackerData[index] = 'pavitra';
-                } else if (trackerData[index] === 'pavitra') {
-                    trackerData[index] = 'broken';
-                } else {
